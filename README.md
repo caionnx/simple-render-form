@@ -1,6 +1,4 @@
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# Simple Render Form using Vue 3 and Nuxt
 
 ## Setup
 
@@ -9,15 +7,6 @@ Make sure to install the dependencies:
 ```bash
 # npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
 ## Development Server
@@ -27,49 +16,18 @@ Start the development server on `http://localhost:3000`:
 ```bash
 # npm
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## Engineering Decisions
+- As Vue 3 is a new context for me (usually I work with React) I decided to use Nuxt to speed up development.
+- Vuetify was added as UI Library, for future scaling of the project.
+- Different types of inputs were aggregated in a single component to reduce duplication of logic.
+  
+## Loose ends
 
-Build the application for production:
+- Input and error validation could be improved for better UX.
+- I have spent some time trying to set the environment to have unit tests but without success. Vuetify seems to be the biggest issue in this situation. Vue Testing Library was my choice of testing library but once again using Nuxt did not make it straightforward to set it up.
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Future improvements
+- Finish up the testing environment and unit tests.
+- Locally save the data to have an easy transfer between edit/render pages. We could do it using the local storage
