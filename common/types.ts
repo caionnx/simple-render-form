@@ -1,4 +1,4 @@
-export enum ElementRenderTypes {
+export const enum ElementRenderTypes {
   DIVIDER = 'DIVIDER',
   NUMBER = 'NUMBER',
   INPUT = 'INPUT',
@@ -6,10 +6,15 @@ export enum ElementRenderTypes {
 }
   
 export type Element = {
-  _id: Number;
+  _id: string;
   type: ElementRenderTypes;
-  id: String;
-  itemName: String;
-  default: String;
+  content: ElementContent;
+}
+
+export type ElementContent = {
+  id: string;
+  itemName: string;
+  default: string;
   isRequired: Boolean;
+  elementType?: string;
 }

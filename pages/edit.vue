@@ -36,12 +36,14 @@
               ></v-select>
             </td>
             <td :colspan="element.type !== ElementRenderTypes.DIVIDER ? '1' : '4'">
-              <v-text-field :rules="rules" v-model="element.id"></v-text-field>
+              <v-text-field :rules="inputRules" v-model="element.content.id"></v-text-field>
             </td>
             <template v-if="element.type !== ElementRenderTypes.DIVIDER">
-              <td><v-text-field v-model="element.itemName"></v-text-field></td>
-              <td><v-text-field v-model="element.default"></v-text-field></td>
-              <td><v-checkbox v-model="element.required"></v-checkbox></td>
+              <td><v-text-field v-model="element.content.itemName"></v-text-field></td>
+              <td>
+                <component :is="element.type !== ElementRenderTypes.CHECKBOX ? VTextField : VCheckbox" :type="element.type" v-model="element.content.default"></component>
+              </td>
+              <td><v-checkbox v-model="element.content.isRequired"></v-checkbox></td>
             </template>
             <td>Drag | <button @click="removeItem(element._id)">Delete</button></td>
           </tr>
@@ -54,49 +56,38 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
   import draggable from "vuedraggable";
   import { ref } from 'vue'
   import { Buffer } from 'buffer'
   import { ElementRenderTypes, type Element } from '../common/types';
+  import { VCheckbox, VTextField } from 'vuetify/lib/components/index.mjs';
 
-  export default {
-    components: {
-      draggable
-    },
-    data() {
-      const list = ref<Element[]>([]);
-      const base64State = ref('');
-      const itemTypes: (keyof typeof ElementRenderTypes)[] = [ElementRenderTypes.DIVIDER, ElementRenderTypes.NUMBER, ElementRenderTypes.INPUT, ElementRenderTypes.CHECKBOX];
-      let addedItemsIndex = 0;
+  const list = ref<Element[]>([]);
+  const base64State = ref('');
+  const itemTypes: (keyof typeof ElementRenderTypes)[] = [ElementRenderTypes.DIVIDER, ElementRenderTypes.NUMBER, ElementRenderTypes.INPUT, ElementRenderTypes.CHECKBOX];
+  let addedItemsIndex = 0;
 
-      const addItem = () => {
-        addedItemsIndex++;
-        list.value.push({ _id: Math.random(), type: ElementRenderTypes.DIVIDER, id: addedItemsIndex.toString(), itemName: "", default: "", isRequired: false });
-      }
+  const addItem = () => {
+    addedItemsIndex++;
+    list.value.push({ 
+      _id: Math.random().toString(), 
+      type: ElementRenderTypes.DIVIDER,
+      content: {id: addedItemsIndex.toString(), itemName: "", default: "", isRequired: true},
+    });
+  }
 
-      const removeItem = (id: Element["_id"]) => {
-        list.value = list.value.filter(item => item._id !== id);
-      }
+  const removeItem = (id: Element["_id"]) => {
+    list.value = list.value.filter(item => item._id !== id);
+  }
 
-      const generateBase64 = () => {
-        const json = JSON.stringify(list.value);
-        base64State.value = Buffer.from(json).toString("base64");
-      }
-    
-      return {
-        ElementRenderTypes,
-        itemTypes,
-        list,
-        base64State,
-        rules: [
-          (value: string) => !!value || 'This is required.',
-          (value: string) =>  list.value.filter(item => item.id === value).length > 1 ? 'This should be unique.' : true,
-        ],
-        addItem,
-        removeItem,
-        generateBase64
-      };
-    }
-  };
+  const generateBase64 = () => {
+    const json = JSON.stringify(list.value);
+    base64State.value = Buffer.from(json).toString("base64");
+  }
+
+  const inputRules = [
+    (value: string) => !!value || 'This is required.',
+    (value: string) =>  list.value.filter(item => item.content.id === value).length > 1 ? 'This should be unique.' : true,
+  ];
 </script>
